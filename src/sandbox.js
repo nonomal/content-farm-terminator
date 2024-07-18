@@ -4,16 +4,18 @@ async function rewriteDocumentBlob(blob, u) {
 
   const headElem = doc.querySelector('head');
 
-  // respect original base but redirect links to parent frame
-  for (const elem of doc.querySelectorAll('base')) {
-    elem.target = '_parent';
+  // according to spec, only the first base element takes effect
+  let baseElem = doc.querySelector('base');
+  if (baseElem) {
+    // respect the original base but redirect links to the parent frame
+    baseElem.target = '_parent';
+  } else {
+    // generate a base element
+    baseElem = doc.createElement('base');
+    baseElem.href = u.href;
+    baseElem.target = '_parent';
+    headElem.insertBefore(baseElem, headElem.firstChild);
   }
-
-  // add base
-  const baseElem = doc.createElement('base');
-  baseElem.href = u.href;
-  baseElem.target = '_parent';
-  headElem.insertBefore(baseElem, headElem.firstChild);
 
   // remove original meta charset and content security policy
   for (const elem of doc.querySelectorAll('meta[charset], meta[http-equiv="content-type"], meta[http-equiv="content-security-policy"]')) {
@@ -22,7 +24,7 @@ async function rewriteDocumentBlob(blob, u) {
 
   // add content security policy to block offensive contents
   // the iframe cannot be loaded without "frame-src blob:"
-  const host = punycode.toASCII(u.host);
+  const host = utils.getNormalizedHostname(u.host);
   const hostSubdomains = "*." + host.replace(/^www[.]/, '');
   const hostSources = `http://${host} https://${host} http://${hostSubdomains} https://${hostSubdomains}`;
   const metaCspElem = doc.createElement("meta");
@@ -34,6 +36,12 @@ async function rewriteDocumentBlob(blob, u) {
   const metaCharsetElem = doc.createElement("meta");
   metaCharsetElem.setAttribute("charset", "UTF-8");
   headElem.insertBefore(metaCharsetElem, headElem.firstChild);
+
+  // remove "target" attribute for all anchors to honor base
+  // anchor opened in a new tab may cause a confusion for the extension
+  for (const elem of doc.querySelectorAll('a[target], area[target]')) {
+    elem.removeAttribute('target');
+  }
 
   // pass document title to top frame
   if (doc.title) { document.title = doc.title; }

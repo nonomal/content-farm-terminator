@@ -22,9 +22,8 @@
      *   to local if failed.
      *
      *   A set could fail due to:
-     *   - storage.sync not available: storage.sync is undefined in Firefox < 52;
-     *     storage.sync methods fail if Firefox config
-     *     webextensions.storage.sync.enabled is not set to true.
+     *   - storage.sync not available: storage.sync methods fail if Firefox
+     *     config webextensions.storage.sync.enabled is not set to true.
      *   - the data to be stored exceeds quota or other limit
      *   - other unclear reason (during data syncing?)
      *
@@ -33,9 +32,10 @@
     defaultOptions: {
       userBlacklist: "",
       userWhitelist: "",
+      userGraylist: "",
       webBlacklists: "https://danny0838.github.io/content-farm-terminator/files/blocklist/content-farms.txt",
       webBlacklistsCacheDuration: 24 * 60 * 60 * 1000,
-      webBlacklistsUpdateInterval: 30 * 60 * 60 * 1000,
+      webBlacklistsUpdateInterval: 5 * 60 * 1000,
       transformRules: "",
       suppressHistory: false,
       showLinkMarkers: true,
@@ -44,7 +44,7 @@
       showUnblockButton: true,
       tempUnblockDuration: 8000,
       tempUnblockCountdownBase: 10000,
-      tempUnblockCountdownIncrement: 5000,
+      tempUnblockCountdownIncrement: 500,
       tempUnblockCountdownReset: 24 * 60 * 60 * 1000,
       tempUnblockCountdown: -1,
       tempUnblockLastAccess: -1,
@@ -173,25 +173,35 @@
       return flavor;
     },
 
-    lang(key, args) {
-      return browser.i18n.getMessage(key, args) || "__MSG_" + key + "__";
+    lang(...args) {
+      const msgRegex = /__MSG_(.*?)__/g;
+      const msgReplacer = (m, k) => utils.lang(k);
+      const fn = this.lang = (key, args) => {
+        const msg = browser.i18n.getMessage(key, args);
+        if (msg) {
+          // recursively replace __MSG_key__
+          return msg.replace(msgRegex, msgReplacer);
+        }
+        return "__MSG_" + key + "__";
+      };
+      return fn(...args);
     },
 
     loadLanguages(...args) {
-      const reReplacer = /__MSG_(.*?)__/;
-      const fnReplacer = (m, k) => utils.lang(k);
+      const msgRegex = /__MSG_(.*?)__/g;
+      const msgReplacer = (m, k) => utils.lang(k);
       const fn = this.loadLanguages = (rootNode = document) => {
-        Array.prototype.forEach.call(rootNode.getElementsByTagName("*"), (elem) => {
+        for (const elem of rootNode.querySelectorAll('*')) {
           if (elem.childNodes.length === 1) {
             const child = elem.firstChild;
             if (child.nodeType === 3) {
-              child.nodeValue = child.nodeValue.replace(reReplacer, fnReplacer);
+              child.nodeValue = child.nodeValue.replace(msgRegex, msgReplacer);
             }
           }
-          Array.prototype.forEach.call(elem.attributes, (attr) => {
-            attr.nodeValue = attr.nodeValue.replace(reReplacer, fnReplacer);
-          }, this);
-        }, this);
+          for (const attr of elem.attributes) {
+            attr.nodeValue = attr.nodeValue.replace(msgRegex, msgReplacer);
+          }
+        }
       };
       return fn(...args);
     },
@@ -231,17 +241,31 @@
       return fn(...args);
     },
 
-    getNormalizedUrl(urlObj) {
+    /**
+     * A helper to normalize URL.hostname for compatibility and performance.
+     *
+     * @param {string} hostname - a URL.hostname (or URL.host)
+     */
+    getNormalizedHostname(hostname) {
+      // Preserved for historical reason and potential future usage.
+      return hostname;
+    },
+
+    getNormalizedUrl(url) {
+      let urlObj;
+      try {
+        urlObj = (url instanceof URL) ? url : new URL(url);
+      } catch (ex) {
+        return null;
+      }
+
       const u = urlObj.username;
       const p = urlObj.password;
       const t = urlObj.port;
-      return urlObj.protocol + '//' + 
-          (u ? u + (p ? ':' + p : '') + '@' : '') + 
-
-          // URL.hostname is not punycoded in some old browsers (e.g. Firefox 52)
-          punycode.toASCII(urlObj.hostname) + 
-
-          (t ? ':' + t : '') + 
+      return urlObj.protocol + '//' +
+          (u ? u + (p ? ':' + p : '') + '@' : '') +
+          this.getNormalizedHostname(urlObj.hostname) +
+          (t ? ':' + t : '') +
           urlObj.pathname + urlObj.search + urlObj.hash;
     },
 
@@ -299,13 +323,13 @@
       });
     },
 
-    getBlockedPageUrl(url, {blockType = 1, inFrame = false, referrer = null} = {}) {
-      url = utils.getNormalizedUrl(new URL(url));
-      referrer = referrer ? utils.getNormalizedUrl(new URL(referrer)) : null;
+    getBlockedPageUrl(url, {blockType = 1 /* BLOCK_TYPE_HOSTNAME */, inFrame = false, tabId = null, requestId = null} = {}) {
+      url = utils.getNormalizedUrl(url);
 
       const redirectUrlObj = new URL(browser.runtime.getURL('blocked.html'));
-      redirectUrlObj.searchParams.set('to', url);
-      if (referrer) { redirectUrlObj.searchParams.set('ref', referrer); }
+      redirectUrlObj.searchParams.set('url', url);
+      if (tabId) { redirectUrlObj.searchParams.set('t', tabId); }
+      if (requestId) { redirectUrlObj.searchParams.set('r', requestId); }
       redirectUrlObj.searchParams.set('type', blockType);
       const redirectUrl = redirectUrlObj.href;
 

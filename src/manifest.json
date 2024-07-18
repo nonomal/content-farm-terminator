@@ -1,12 +1,12 @@
 {
   "manifest_version": 2,
   "name": "__MSG_appName__",
-  "version": "5.5.0",
+  "version": "5.15.1",
   "description": "__MSG_appDesc__",
   "author": "Danny Lin",
   "default_locale": "en",
 
-  "minimum_chrome_version": "55",
+  "minimum_chrome_version": "58",
 
   "homepage_url": "https://danny0838.github.io/content-farm-terminator/",
 
@@ -23,8 +23,9 @@
     "webRequest",
     "webRequestBlocking",
     "storage",
-    "http://*/",
-    "https://*/"
+    "http://*/*",
+    "https://*/*",
+    "file:///*"
   ],
 
   "optional_permissions": [
@@ -35,7 +36,7 @@
     "persistent": true,
     "scripts": [
       "lib/browser-polyfill.js",
-      "lib/punycode.js",
+      "lib/Regex.js",
       "content-farm-filter.js",
       "utils.js",
       "background.js"
@@ -52,7 +53,6 @@
       ],
       "js": [
         "lib/browser-polyfill.js",
-        "lib/punycode.js",
         "utils.js",
         "content.js"
       ],

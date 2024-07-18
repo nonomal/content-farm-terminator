@@ -8,7 +8,7 @@
   },
 
   "blockTab": {
-    "message": "將此分頁的網域加入黑名單",
+    "message": "將選取分頁的網域加入黑名單",
     "description": "Label of context menu blocker on tab"
   },
 
@@ -60,8 +60,8 @@
   },
 
   "blockSites": {
-    "message": "是否將以下規則加入黑名單？\n\n$rules$",
-    "description": "Confirm message of blocking multiple links",
+    "message": "即將把以下規則加入黑名單：\n\n$rules$\n\n請輸入想附上的註解：",
+    "description": "Prompt message of blocking multiple links",
     "placeholders": {
       "rules": {
         "content": "$1",
@@ -152,7 +152,7 @@
   },
 
   "unblockBtnPrompt": {
-    "message": "內容農場的資訊大多缺乏查證、品質參差不齊、且可能含有不良廣告或惡意程式，進入前請三思。\n* 如果想調查頁面內容，可使用 [檢視] 功能，以免受到惡意程式攻擊，且能避免農場主得到廣告收益。解鎖只建議用於 [檢視] 功能無法正常運作的網站。\n* 如果認為此站台不是內容農場，或基於其他理由不想繼續封鎖，可將網址加入白名單或從黑名單移除。\n\n若確定要暫時解鎖此頁面，請輸入驗證碼：$key$",
+    "message": "內容農場的資訊大多缺乏查證、品質參差不齊、且可能含有不良廣告或惡意程式，進入前請三思。\n• 如果想調查頁面內容，可使用 [檢視] 功能，以免受到惡意程式攻擊，且能避免站主得到廣告收益。解鎖只建議用於 [檢視] 功能無法正常運作的網站，但這類網站多需腳本載入，有惡意程式的可能性高，請考慮用獨立的瀏覽器、帳戶、容器分頁、或無痕視窗瀏覽，以降低風險。\n• 如果認為此站台不是內容農場，或基於其他理由不想繼續封鎖，可將網址從黑名單移除或加入灰、白名單。\n\n若還是確定要暫時解鎖此頁面，請輸入驗證碼：$key$",
     "description": "Prompt message of unblock button in blocked page",
     "placeholders": {
       "key": {
@@ -198,23 +198,13 @@
   },
 
   "infoUrlBlocker": {
-    "message": "封鎖規則:",
-    "description": "Label of the rule for the recently blocked URL in options page"
+    "message": "符合規則:",
+    "description": "Label of the rule for the recently visited/blocked URL in options page"
   },
 
   "infoUrlBlockerSrc": {
-    "message": "封鎖規則來源:",
-    "description": "Label of the rule source for the recently blocked URL in options page"
-  },
-
-  "allBlacklist": {
-    "message": "作用中的黑名單",
-    "description": "Label of allBlacklist field in options page"
-  },
-
-  "allBlacklistLink": {
-    "message": "檢視",
-    "description": "Label of the link of allBlacklist field in options page"
+    "message": "規則來源:",
+    "description": "Label of the rule source for the recently visited/blocked URL in options page"
   },
 
   "webBlacklists": {
@@ -232,9 +222,14 @@
     "description": "Placeholder of webBlacklists field in options page"
   },
 
-  "webBlacklistsLink": {
+  "webBlacklistsLinkView": {
+    "message": "檢視已載入的黑名單",
+    "description": "Label of the link to all blacklists in options page"
+  },
+
+  "webBlacklistsLinkSubscribe": {
     "message": "我們的網路黑名單",
-    "description": "Label of the link to web blacklists page"
+    "description": "Label of the link to subscribable web blacklists in options page"
   },
 
   "userBlacklist": {
@@ -258,13 +253,28 @@
   },
 
   "userWhitelistDesc": {
-    "message": "想解除封鎖的網站名單。每行一個。輸入網址會自動修正。",
+    "message": "不想封鎖的網站名單。這些網站即使被列入黑名單也不會被封鎖。每行一個。輸入網址會自動修正。",
     "description": "Description of userWhitelist field in options page"
   },
 
   "userWhitelistPlaceholder": {
     "message": "example.com (示例)",
     "description": "Placeholder of userWhitelist field in options page"
+  },
+
+  "userGraylist": {
+    "message": "自訂灰名單",
+    "description": "Label of userGraylist field in options page"
+  },
+
+  "userGraylistDesc": {
+    "message": "想消除的規則。可使網路黑名單中的相同規則失效。每行一個。輸入網址會自動修正。",
+    "description": "Description of userGraylist field in options page"
+  },
+
+  "userGraylistPlaceholder": {
+    "message": "example.com (示例)",
+    "description": "Placeholder of userGraylist field in options page"
   },
 
   "transformRules": {
@@ -318,13 +328,13 @@
   },
 
   "report": {
-    "message": "舉報內容農場",
-    "description": "Label of report button in options page"
+    "message": "回報內容農場",
+    "description": "Label of report link in options page"
   },
 
   "reportUrl": {
     "message": "https://forms.gle/sdNBXLSjePwkT5H86",
-    "description": "Target URL of report button in options page"
+    "description": "Target URL of report link in options page"
   },
 
   "save": {
@@ -358,7 +368,17 @@
   },
 
   "helpTransformSyntaxContent": {
-    "message": "網址轉換規則是每行一條規則，每一條規則的格式如下：\n\n    <尋找文本> <替換文本> <註解文字>\n\n<尋找文本> 須為有效的正規表示式 (RegExp)，頭尾須為 \"/\"。<替換文本> 可以是任意文字，並可使用 \"$$\" 帶入特殊內容：\n- \"$$$\": 帶入 \"$$\" 符號。\n- \"$$n\": 帶入 <尋找文本> 第 n 個括號匹配的字串。（n 為正整數）\n- \"$$&\": 帶入與 <尋找文本> 匹配的字串。\n- \"$$`\": 帶入與 <尋找文本> 匹配的字串前面的部分。\n- \"$$'\": 帶入與 <尋找文本> 匹配的字串後面的部分。\n- 對於 \"$$n\"、\"$$&\"、\"$$`\"、\"$$'\"，如果 <替換文本> 是正規表示式規則（頭尾皆為 \"/\"），帶入的內容會自動做脫義處理。\n\n轉換網址時，會由前後往逐一尋找及替換，找到符合的 <尋找文本> 就會把網址轉換為 <替換文本> 並中止後續處理。若沒有符合的，則不做任何轉換。\n\n例如以下規則：\n\n    /^https?://example\\.com/(.*)/ $$1.example.com\n\n會把網址 \"https://example.com/my.job\" 轉換為 \"my.job.example.com\"。\n\n而以下規則：\n\n    /^https?://example\\.com/(.*)/ /^https?://example\\.com/$$1/\n\n則會把網址 \"https://example.com/my.job\" 轉換為 \"/^https?://example\\.com/my\\.job/\"。\n\n你可以在終結內容農場後台資料庫（https://github.com/danny0838/content-farm-terminator/tree/gh-pages）找到一些站台的網址轉換規則。",
+    "message": "網址轉換規則是每行一條規則，每一條規則的格式如下：\n\n    <尋找文本> <替換文本> <註解文字>\n\n<尋找文本> 須為有效的正規表示式 (RegExp)，頭尾須為 \"/\"。<替換文本> 可以是任意文字，並可使用 \"$$\" 帶入特殊內容：\n- \"$$$\": 帶入 \"$$\" 符號。\n- \"$$n\": 帶入 <尋找文本> 第 n 個括號匹配的字串。（n 為正整數）\n- \"$$&\": 帶入與 <尋找文本> 匹配的字串。\n- \"$$`\": 帶入與 <尋找文本> 匹配的字串前面的部分。\n- \"$$'\": 帶入與 <尋找文本> 匹配的字串後面的部分。\n- 對於 \"$$n\"、\"$$&\"、\"$$`\"、\"$$'\"，如果 <替換文本> 是正規表示式規則（頭尾皆為 \"/\"），帶入的內容會自動做脫義處理。\n\n轉換網址時，會由前往後逐一尋找及替換，找到符合的 <尋找文本> 就會把網址轉換為 <替換文本> 並中止後續處理。若沒有符合的，則不做任何轉換。\n\n例如以下規則：\n\n    /^https?://example\\.com/(.*)/ $$1.example.com\n\n會把網址 \"https://example.com/my.job\" 轉換為 \"my.job.example.com\"。\n\n而以下規則：\n\n    /^https?://example\\.com/(.*)/ /^https?://example\\.com/$$1/\n\n則會把網址 \"https://example.com/my.job\" 轉換為 \"/^https?://example\\.com/my\\.job/\"。\n\n可以在「我們的網路黑名單」找到一些網站的網址轉換規則。",
     "description": "Content of the transform syntax help page"
+  },
+
+  "blacklistsTitle": {
+    "message": "已載入的黑名單",
+    "description": "Title of allBlacklists page"
+  },
+
+  "requestsTitle": {
+    "message": "最近網路請求記錄",
+    "description": "Title of requests page"
   }
 }

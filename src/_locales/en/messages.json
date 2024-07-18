@@ -8,7 +8,7 @@
   },
 
   "blockTab": {
-    "message": "Blacklist the domain of this tab",
+    "message": "Blacklist the domain(s) of the selected tab(s)",
     "description": "Label of context menu blocker on tab"
   },
 
@@ -60,8 +60,8 @@
   },
 
   "blockSites": {
-    "message": "Add following rules to blacklist?\n\n$rules$",
-    "description": "Confirm message of blocking multiple links",
+    "message": "Adding following rules to blacklist:\n\n$rules$\n\nPlease enter a comment to append:",
+    "description": "Prompt message of blocking multiple links",
     "placeholders": {
       "rules": {
         "content": "$1",
@@ -152,7 +152,7 @@
   },
 
   "unblockBtnPrompt": {
-    "message": "Information from a content farm is usually unverified and questionable, and malicious ads and/or scripts could reside. Please think carefully before entering.\n* Try View if you intend to investigate the page content, and Unlock only for cases that View cannot work as expected.\n* Add the URL to the whitelist (or remove from the blacklist) if you don't think this site is a content farm or you intend not to keep blocking it for any reason.\n\nTo still unblock this page, input the following passcode: $key$",
+    "message": "Information from a content farm is usually unverified and questionable, and malicious ads and/or scripts could reside. Please think carefully before entering.\n• Try View if you intend to investigate the page content, and Unlock only for cases that View cannot work as expected. Such sites mostly requires scripts to load and are more likely to contain malicious scripts. Consider browsing with an independent browser, profile, container, or incognito window to reduce the risk.\n• Add the URL to the graylist/whitelist (or remove from the blacklist) if you don't think this site is a content farm or you intend not to keep blocking it for any reason.\n\nTo still unblock this page temporarily, input the following passcode: $key$",
     "description": "Prompt message of unblock button in blocked page",
     "placeholders": {
       "key": {
@@ -198,23 +198,13 @@
   },
 
   "infoUrlBlocker": {
-    "message": "Blocking rule:",
-    "description": "Label of the rule for the recently blocked URL in options page"
+    "message": "Matched rule:",
+    "description": "Label of the rule for the recently visited/blocked URL in options page"
   },
 
   "infoUrlBlockerSrc": {
-    "message": "Blocking rule source:",
-    "description": "Label of the rule source for the recently blocked URL in options page"
-  },
-
-  "allBlacklist": {
-    "message": "Loaded Blacklist",
-    "description": "Label of allBlacklist field in options page"
-  },
-
-  "allBlacklistLink": {
-    "message": "View",
-    "description": "Label of the link of allBlacklist field in options page"
+    "message": "Rule source:",
+    "description": "Label of the rule source for the recently visited/blocked URL in options page"
   },
 
   "webBlacklists": {
@@ -227,14 +217,19 @@
     "description": "Description of webBlacklists field in options page"
   },
 
-  "webBlacklistsLink": {
-    "message": "Our blacklists.",
-    "description": "Label of the link to web blacklists page"
-  },
-
   "webBlacklistsPlaceholder": {
     "message": "https://example.com/blacklist.txt (demo)",
     "description": "Placeholder of webBlacklists field in options page"
+  },
+
+  "webBlacklistsLinkView": {
+    "message": "View loaded blacklists.",
+    "description": "Label of the link to all blacklists in options page"
+  },
+
+  "webBlacklistsLinkSubscribe": {
+    "message": "Our blacklists.",
+    "description": "Label of the link to subscribable web blacklists in options page"
   },
 
   "userBlacklist": {
@@ -258,13 +253,28 @@
   },
 
   "userWhitelistDesc": {
-    "message": "List of sites to unblock. One entry per line. URLs will be auto-corrected.",
+    "message": "List of sites to unblock. Such sites won't be blocked even if blacklisted. One entry per line. URLs will be auto-corrected.",
     "description": "Description of userWhitelist field in options page"
   },
 
   "userWhitelistPlaceholder": {
     "message": "example.com (demo)",
     "description": "Placeholder of userWhitelist field in options page"
+  },
+
+  "userGraylist": {
+    "message": "User Graylist",
+    "description": "Label of userGraylist field in options page"
+  },
+
+  "userGraylistDesc": {
+    "message": "List of rules to nullify. Such rule disables identical web blacklist rules. One entry per line. URLs will be auto-corrected.",
+    "description": "Description of userGraylist field in options page"
+  },
+
+  "userGraylistPlaceholder": {
+    "message": "example.com (demo)",
+    "description": "Placeholder of userGraylist field in options page"
   },
 
   "transformRules": {
@@ -319,12 +329,12 @@
 
   "report": {
     "message": "Report a content farm.",
-    "description": "Label of report button in options page"
+    "description": "Label of report link in options page"
   },
 
   "reportUrl": {
     "message": "https://forms.gle/RvwfY2DEeASYxDXc9",
-    "description": "Target URL of report button in options page"
+    "description": "Target URL of report link in options page"
   },
 
   "save": {
@@ -358,7 +368,17 @@
   },
 
   "helpTransformSyntaxContent": {
-    "message": "URL transformation rules is one rule per line. The syntax of each rule is:\n\n    <pattern> <replacement> <comment>\n\nWhere <pattern> is a regular expression (RegExp) enclosed by \"/\", and <replacement> is any text with \"$$\" for special meaning:\n- \"$$$\": inserts a \"$$\".\n- \"$$n\": inserts the nth parenthesized submatch string. (n is a positive integer)\n- \"$$&\": inserts the matched substring.\n- \"$$`\": inserts the portion of the string that precedes the matched substring.\n- \"$$'\": inserts the portion of the string that follows the matched substring.\n- If <replacement> is a RegExp (enclosed by \"/\"), the inserted string will be escaped automatically.\n\nWhen trnsforming a URL, rules are matched one by one. When a matched <pattern> is found, the URL will be replaced with the corresponding <replacement> and further processing is skipped. If no match is found, the URL is not trnsformed.\n\nFor example, the following rule:\n\n    /^https?://example\\.com/(.*)/ $$1.example.com\n\ntransforms the URL \"https://example.com/my.job\" into \"my.job.example.com\".\n\nWhile the following rule:\n\n    /^https?://example\\.com/(.*)/ /^https?://example\\.com/$$1/\n\ntransforms the URL \"https://example.com/my.job\" into \"/^https?://example\\.com/my\\.job/\".\n\nTransform rules for several sites can be found in our database (https://github.com/danny0838/content-farm-terminator/tree/gh-pages).",
+    "message": "URL transformation rules is one rule per line. The syntax of each rule is:\n\n    <pattern> <replacement> <comment>\n\nWhere <pattern> is a regular expression (RegExp) enclosed by \"/\", and <replacement> is any text with \"$$\" for special meaning:\n- \"$$$\": inserts a \"$$\".\n- \"$$n\": inserts the nth parenthesized submatch string. (n is a positive integer)\n- \"$$&\": inserts the matched substring.\n- \"$$`\": inserts the portion of the string that precedes the matched substring.\n- \"$$'\": inserts the portion of the string that follows the matched substring.\n- If <replacement> is a RegExp (enclosed by \"/\"), the inserted string will be escaped automatically.\n\nWhen trnsforming a URL, rules are matched one by one. When a matched <pattern> is found, the URL will be replaced with the corresponding <replacement> and further processing is skipped. If no match is found, the URL is not trnsformed.\n\nFor example, the following rule:\n\n    /^https?://example\\.com/(.*)/ $$1.example.com\n\ntransforms the URL \"https://example.com/my.job\" into \"my.job.example.com\".\n\nWhile the following rule:\n\n    /^https?://example\\.com/(.*)/ /^https?://example\\.com/$$1/\n\ntransforms the URL \"https://example.com/my.job\" into \"/^https?://example\\.com/my\\.job/\".\n\nTransform rules for several sites can be found in “Our blacklists”.",
     "description": "Content of the transform syntax help page"
+  },
+
+  "blacklistsTitle": {
+    "message": "Loaded blacklists",
+    "description": "Title of allBlacklists page"
+  },
+
+  "requestsTitle": {
+    "message": "Records of recent web requests",
+    "description": "Title of requests page"
   }
 }
